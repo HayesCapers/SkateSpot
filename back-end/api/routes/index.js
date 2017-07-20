@@ -39,7 +39,7 @@ router.get('/', function(req, res, next) {
 });
 
 // i'm sure he'll see this eventually
-router.get('/hayesyoumonster',(req,res)=>{
+router.post('/hayesyoumonster',(req,res)=>{
 	const query = 'SELECT * FROM __users WHERE userName = ';
 	var userName = req.body.userName;
 	connection.query(query,[userName],(error,results)=>{
