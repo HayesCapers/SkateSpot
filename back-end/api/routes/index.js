@@ -42,10 +42,40 @@ router.get('/', function(req, res, next) {
 router.get('/hayesyoumonster',(req,res)=>{
 	const query = 'SELECT * FROM __users WHERE userName = ';
 	var userName = req.body.userName;
-	connection.query()
-	res.json({
-		msg: "you'll see this at least once, i swear it"
-	});
+	connection.query(query,[userName],(error,results)=>{
+		if(results.length > 0){
+			if(error){
+				res.json({
+					msg: error
+				})
+			}else{
+				var checkHash = bcrypt.compareSync(req.body.password,results[0].password);
+				if (checkHash){
+					const updateToken = `UPDATE __users SET token = ?, tokenEXP = DATE_ADD(NOW(), INTERVAL 1 WEEK) WHERE userName = ?`
+					var token = randToken.uid(40);
+					connection.query(updateToken, [token,userName], (upERR, upRES)=>{
+						if(upERR){
+							res.json({
+								msg: upERR
+							})
+						}else{
+							res.json({
+								msg: 'loginSuccess'
+							})
+						}
+					})
+				}else{
+					res.json({
+						msg: 'passInvalid'
+					})
+				}
+			}
+		}else{
+			res.json({
+				msg: 'youDunGoofed'
+			})
+		}
+	})
 });
 
 // eh. we'll see.
