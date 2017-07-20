@@ -1,17 +1,23 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Header, Button, Spinner, Card, CardSection } from './components/common';
-import LoginForm from './components/LoginForm';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import Router from './Router';
+import reducers from './reducers';
+import reduxPromise from 'redux-promise';
+
 
 class App extends Component {
+
 	render() {
+		const store = createStore(reducers, {}, applyMiddleware(reduxPromise))
+
 		return(
-			<View>
-				<Header headerText='WELCOME' />
-				<LoginForm />
-			</View>	
+			<Provider store={store}>
+				<Router />
+			</Provider>
 		);
 	}
+
 }
 
 export default App;
