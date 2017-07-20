@@ -12,7 +12,7 @@ var router = express.Router();
 var config = require('../config/config');
 
 // for the hashes
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 
 // tokens for session information
 var randToken = require('rand-token');
@@ -40,7 +40,8 @@ router.get('/', function(req, res, next) {
 
 // i'm sure he'll see this eventually
 router.post('/hayesyoumonster',(req,res)=>{
-	const query = 'SELECT * FROM __users WHERE userName = ';
+	console.log(req.body.userName)
+	const query = 'SELECT * FROM __users WHERE userName = ?';
 	var userName = req.body.userName;
 	connection.query(query,[userName],(error,results)=>{
 		if(results.length > 0){
@@ -49,8 +50,8 @@ router.post('/hayesyoumonster',(req,res)=>{
 					msg: error
 				})
 			}else{
-				var checkHash = bcrypt.compareSync(req.body.password,results[0].password);
-				if (checkHash){
+				// var checkHash = bcrypt.compareSync(req.body.password,results[0].password);
+				if (req.body.password === results[0].password){
 					const updateToken = `UPDATE __users SET token = ?, tokenEXP = DATE_ADD(NOW(), INTERVAL 1 WEEK) WHERE userName = ?`
 					var token = randToken.uid(40);
 					connection.query(updateToken, [token,userName], (upERR, upRES)=>{
@@ -59,8 +60,9 @@ router.post('/hayesyoumonster',(req,res)=>{
 								msg: upERR
 							})
 						}else{
+							console.log(upRES)
 							res.json({
-								msg: 'loginSuccess'
+								msg: 'Success'
 							})
 						}
 					})
