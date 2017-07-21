@@ -39,8 +39,7 @@ router.get('/', function(req, res, next) {
 });
 
 // i'm sure he'll see this eventually
-router.post('/hayesyoumonster',(req,res)=>{
-	console.log(req.body.userName)
+router.post('/login',(req,res)=>{
 	const query = 'SELECT * FROM __users WHERE userName = ?';
 	var userName = req.body.userName;
 	connection.query(query,[userName],(error,results)=>{
@@ -50,8 +49,8 @@ router.post('/hayesyoumonster',(req,res)=>{
 					msg: error
 				})
 			}else{
-				// var checkHash = bcrypt.compareSync(req.body.password,results[0].password);
-				if (req.body.password === results[0].password){
+				var checkHash = bcrypt.compareSync(req.body.password,results[0].password);
+				if (checkHash){
 					const updateToken = `UPDATE __users SET token = ?, tokenEXP = DATE_ADD(NOW(), INTERVAL 1 WEEK) WHERE userName = ?`
 					var token = randToken.uid(40);
 					connection.query(updateToken, [token,userName], (upERR, upRES)=>{
@@ -62,7 +61,9 @@ router.post('/hayesyoumonster',(req,res)=>{
 						}else{
 							console.log(upRES)
 							res.json({
-								msg: 'Success'
+								msg: 'Success',
+								userName: userName,
+								token: token
 							})
 						}
 					})
@@ -81,12 +82,45 @@ router.post('/hayesyoumonster',(req,res)=>{
 });
 
 // eh. we'll see.
-router.get('/secrets', (req,res)=>{
-	res.json({
-		ham: 'ham',
-		bone: 'bone',
-		hambone: 'bender'
-	});
+router.get('/register', (req,res)=>{
+	const userCheck = 'SELECT * FROM __users WHERE userName = ? OR email = ?';
+	const registration = 'INSERT INTO __users (userName, email, password, phoneNumber, token, tokenEXP) VALUES (?,?,?,?,?, DATE_ADD(NOW(), INTERVAL 1 WEEK)'
+	var reg = req.body;
+	var hash = bcrypt.hashSync(reg.password);
+	var token = randToken.uid(40);
+	connection.query(userCheck,[reg.userName,reg.email], (checkERR, checkRES)=>{
+		if(checkERR){
+			res.json({
+				msg: checkERR
+			})
+		}else{
+			if(checkRES.length > 0){
+				if(checkRES[0].email === reg.email){
+					res.json({
+						msg: 'emailTaken'
+					})
+				}else if(checkRES[0].userName === reg.userName){
+					res.json({
+						msg: 'nameTaken'
+					})
+				}
+			}else{
+				connection.query(registration,[reg.userName,reg.email,hash,reg.phoneNumber,token],(regERR,regRES)=>{
+					if(regERR){
+						res.json({
+							msg: regERR
+						})
+					}else{
+						res.json({
+							msg: 'regSuccess',
+							userName: reg.userName,
+							token: token
+						})
+					}
+				})
+			}
+		}	
+	})
 });
 
 
