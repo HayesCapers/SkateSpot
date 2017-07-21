@@ -32,7 +32,7 @@ var connection = mysql.createConnection({
 connection.connect();
 
 // useless but i'll keep it anyway.
-router.get('/', function(req, res, next) {
+router.post('/', function(req, res, next) {
   res.json({
 	msg: 'hayes, you monster'
   });
@@ -82,7 +82,8 @@ router.post('/login',(req,res)=>{
 });
 
 // eh. we'll see.
-router.get('/register', (req,res)=>{
+router.post('/register', (req,res)=>{
+	console.log(req.body)
 	const userCheck = 'SELECT * FROM __users WHERE userName = ? OR email = ?';
 	const registration = 'INSERT INTO __users (userName, email, password, phoneNumber, token, tokenEXP) VALUES (?,?,?,?,?, DATE_ADD(NOW(), INTERVAL 1 WEEK)'
 	var reg = req.body;

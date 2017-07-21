@@ -37,8 +37,6 @@ export const loginUser = (userName, password) => {
 			})
 		})
 
-		console.log(thePromise)
-
 		thePromise.then(user => {
 			if (user.msg === 'Success') {
 				loginUserSuccess(dispatch,user)
