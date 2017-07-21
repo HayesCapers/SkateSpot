@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { Header, Button, Spinner, Card, CardSection } from './components/common';
+import { Scene, Router, Actions } from 'react-native-router-flux';
 import LoginForm from './components/LoginForm';
+import RegisterForm from './components/RegisterForm';
 
-class Router extends Component {
+class AppRouter extends Component {
 	render() {
 		return(
-			<View>
-				<Header headerText='WELCOME' />
-				<LoginForm />
-			</View>	
+			<Router sceneStyle={{ paddingTop: 65 }}>
+				<Scene key='auth'>
+					<Scene key='login' component={LoginForm} title='Login' />
+					<Scene key='register' component={RegisterForm} title='Register' />
+				</Scene>
+			</Router>
 		)
 	}
 }
 
-export default Router
+export default AppRouter

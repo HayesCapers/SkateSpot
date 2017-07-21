@@ -8,12 +8,10 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "jquery": "^3.2.1",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.3",
     "react-native-router-flux": "3.38.0",
     "react-redux": "^5.0.5",
-    "react-static-container": "1.0.1",
     "redux": "^3.7.2",
     "redux-promise": "^0.5.3",
     "redux-thunk": "2.2.0"

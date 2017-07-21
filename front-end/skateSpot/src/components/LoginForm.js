@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 import { connect } from 'react-redux';
+import { Actions } from 'react-native-router-flux';
 import { emailChanged, passwordChanged, loginUser } from '../actions/AuthActions';
 import { Card, Button, CardSection, Input, Spinner } from './common';
 
@@ -51,6 +52,15 @@ class LoginForm extends Component {
 						Log in
 					</Button>
 				</CardSection>
+
+				<CardSection>
+					<Button
+						onPress={Actions.register}
+					>
+						Sign Up
+					</Button>
+				</CardSection>
+
 			</Card>
 		)
 	}
