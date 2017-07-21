@@ -82,7 +82,7 @@ router.post('/login',(req,res)=>{
 });
 
 // eh. we'll see.
-router.get('/register', (req,res)=>{
+router.post('/register', (req,res)=>{
 	const userCheck = 'SELECT * FROM __users WHERE userName = ? OR email = ?';
 	const registration = 'INSERT INTO __users (userName, email, password, phoneNumber, token, tokenEXP) VALUES (?,?,?,?,?, DATE_ADD(NOW(), INTERVAL 1 WEEK)'
 	var reg = req.body;
@@ -105,7 +105,7 @@ router.get('/register', (req,res)=>{
 					})
 				}
 			}else{
-				connection.query(registration,[reg.userName,reg.email,hash,reg.phoneNumber,token],(regERR,regRES)=>{
+				connection.query(registration,[reg.userName,reg.email,hash,reg.phone,token],(regERR,regRES)=>{
 					if(regERR){
 						res.json({
 							msg: regERR
