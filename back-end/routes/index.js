@@ -112,7 +112,7 @@ router.post('/register', (req,res)=>{
 						})
 					}else{
 						res.json({
-							msg: 'regSuccess',
+							msg: 'Success',
 							userName: reg.userName,
 							token: token
 						})
